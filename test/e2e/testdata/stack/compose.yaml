@@ -1,0 +1,36 @@
+services:
+  api:
+    image: busybox:1.36
+    command: ["sh", "-c", "echo api-ready; touch /tmp/ready; exec sleep 3600"]
+    healthcheck:
+      test: ["CMD", "test", "-f", "/tmp/ready"]
+      interval: 1s
+      timeout: 1s
+      retries: 5
+    ports:
+      - "127.0.0.1:18080:8080"
+    volumes:
+      - data:/data
+    networks:
+      - backend
+    stop_grace_period: 1s
+  web:
+    image: busybox:1.36
+    deploy:
+      replicas: 2
+    command: ["sh", "-c", "echo web-ready; exec sleep 3600"]
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - backend
+    stop_grace_period: 1s
+  app:
+    build: ./app
+    networks:
+      - backend
+    stop_grace_period: 1s
+networks:
+  backend: {}
+volumes:
+  data: {}
