@@ -74,6 +74,8 @@ func keepOwned(project string, names []string, declared map[string]bool) []strin
 
 // normalizeImage makes equivalent references equal, e.g. nginx and docker.io/library/nginx:latest.
 func normalizeImage(s string) string {
+	// podman/buildah store unqualified local builds as localhost/<name>, so it names the same image.
+	s = strings.TrimPrefix(s, "localhost/")
 	if r, err := reference.ParseDockerRef(s); err == nil {
 		return r.String()
 	}
