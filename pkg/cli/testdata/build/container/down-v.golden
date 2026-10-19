@@ -1,0 +1,7 @@
+container stop build-proxy-1
+container delete --force build-proxy-1
+container stop build-app-1
+container delete --force build-app-1
+container network delete build_default
+# stderr: warning: containers.build-app-1: volumes: ignored (container keeps anonymous volumes; run container volume prune)
+# stderr: warning: containers.build-proxy-1: volumes: ignored (container keeps anonymous volumes; run container volume prune)

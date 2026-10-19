@@ -1,0 +1,2 @@
+nerdctl logs build-app-1
+nerdctl logs build-proxy-1

@@ -1,0 +1,2 @@
+docker logs web-db-1
+docker logs web-web-1

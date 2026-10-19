@@ -1,0 +1,131 @@
+CreateNetwork
+  argv: ["network" "create" "--internal" "--label" "com.docker.compose.network=front" "--label" "com.docker.compose.project=proj" "--subnet" "172.28.0.0/16" "proj_front"]
+  warnings: networks.proj_front: attachable: ignored (container has no equivalent)
+  warnings: networks.proj_front: driver_opts: ignored (container network options are plugin-specific)
+  warnings: networks.proj_front: enable_ipv6: ignored (container needs an ipv6 subnet in ipam.config)
+  warnings: networks.proj_front: ipam.config.aux_addresses: ignored (container has no equivalent)
+  warnings: networks.proj_front: ipam.config.gateway: ignored (container has no equivalent)
+  warnings: networks.proj_front: ipam.config.ip_range: ignored (container has no equivalent)
+  warnings: networks.proj_front: ipam.options: ignored (container has no equivalent)
+
+CreateVolume
+  argv: ["volume" "create" "--label" "com.docker.compose.project=proj" "--label" "com.docker.compose.volume=data" "proj_data"]
+  warnings: volumes.proj_data: driver_opts.device: ignored (container has no equivalent)
+  warnings: volumes.proj_data: driver_opts.o: ignored (container has no equivalent)
+  warnings: volumes.proj_data: driver_opts.type: ignored (container has no equivalent)
+
+BuildImage
+  argv: ["build" "--file" "Dockerfile" "--build-arg" "NGINX_VERSION=1.27" "--target" "runtime" "--label" "org.opencontainers.image.title=web" "--no-cache" "--pull" "--platform" "linux/amd64" "--platform" "linux/arm64" "--ssh" "default" "--secret" "id=npmrc,src=/srv/proj/.npmrc" "--tag" "proj-web" "--tag" "registry.example.test/proj-web:1.0" "/srv/proj/web"]
+  warnings: services.web: build.additional_contexts: ignored (container has no equivalent)
+  warnings: services.web: build.cache_from: ignored (container has no equivalent)
+  warnings: services.web: build.cache_to: ignored (container has no equivalent)
+  warnings: services.web: build.extra_hosts: ignored (container has no equivalent)
+  warnings: services.web: build.isolation: ignored (container has no equivalent)
+  warnings: services.web: build.network: ignored (container has no equivalent)
+  warnings: services.web: build.privileged: ignored (container has no equivalent)
+  warnings: services.web: build.shm_size: ignored (container has no equivalent)
+  warnings: services.web: build.ulimits: ignored (container has no equivalent)
+
+RunContainer
+  argv: ["run" "--detach" "--name" "proj-web-1" "--platform" "linux/amd64" "--env" "NGINX_PORT=80" "--env" "TZ=UTC" "--label" "com.docker.compose.container-number=1" "--label" "com.docker.compose.oneoff=False" "--label" "com.docker.compose.project=proj" "--label" "com.docker.compose.project.config_files=/srv/proj/compose.yaml" "--label" "com.docker.compose.project.working_dir=/srv/proj" "--label" "com.docker.compose.service=web" "--user" "101:101" "--workdir" "/usr/share/nginx/html" "--tty" "--interactive" "--init" "--read-only" "--cap-add" "NET_ADMIN" "--cap-drop" "ALL" "--ulimit" "nofile=1024:2048" "--dns" "1.1.1.1" "--dns-search" "example.test" "--dns-option" "ndots:2" "--tmpfs" "/run" "--shm-size" "64M" "--entrypoint" "/docker-entrypoint.sh" "--memory" "512M" "--cpus" "2" "--publish" "127.0.0.1:8080:80/tcp" "--mount" "type=volume,source=proj_data,target=/data,readonly" "--network" "proj_front,alias=web,alias=www,mac=02:42:ac:1c:00:0a" "--network" "proj_back,alias=web-internal,mac=02:42:ac:1d:00:0a" "nginx:1.27" "nginx" "-g" "daemon off;"]
+  warnings: services.web: annotations: ignored (container has no equivalent)
+  warnings: services.web: blkio_config: ignored (container has no equivalent)
+  warnings: services.web: cgroup: ignored (container has no equivalent)
+  warnings: services.web: cgroup_parent: ignored (container has no equivalent)
+  warnings: services.web: cpu_count: ignored (container has no equivalent)
+  warnings: services.web: cpu_percent: ignored (container has no equivalent)
+  warnings: services.web: cpu_period: ignored (container has no equivalent)
+  warnings: services.web: cpu_quota: ignored (container has no equivalent)
+  warnings: services.web: cpu_rt_period: ignored (container has no equivalent)
+  warnings: services.web: cpu_rt_runtime: ignored (container has no equivalent)
+  warnings: services.web: cpu_shares: ignored (container has no equivalent)
+  warnings: services.web: cpus: degraded to 2 (container allocates whole cpus)
+  warnings: services.web: cpuset: ignored (container has no equivalent)
+  warnings: services.web: device_cgroup_rules: ignored (container has no equivalent)
+  warnings: services.web: devices: ignored (container has no equivalent)
+  warnings: services.web: domainname: ignored (container has no equivalent)
+  warnings: services.web: expose: ignored (container has no equivalent)
+  warnings: services.web: extra_hosts: ignored (container has no equivalent)
+  warnings: services.web: gpus: ignored (container has no equivalent)
+  warnings: services.web: group_add: ignored (container has no equivalent)
+  warnings: services.web: hostname: ignored (container has no equivalent)
+  warnings: services.web: ipc: ignored (container has no equivalent)
+  warnings: services.web: isolation: ignored (container has no equivalent)
+  warnings: services.web: links: ignored (container has no equivalent)
+  warnings: services.web: logging: ignored (container has no equivalent)
+  warnings: services.web: mac_address: ignored (container has no equivalent)
+  warnings: services.web: mem_reservation: ignored (container has no equivalent)
+  warnings: services.web: mem_swappiness: ignored (container has no equivalent)
+  warnings: services.web: memswap_limit: ignored (container has no equivalent)
+  warnings: services.web: network_mode: ignored (container has no network modes; the default network is used)
+  warnings: services.web: networks.back.driver_opts: ignored (container has no equivalent)
+  warnings: services.web: networks.back.gw_priority: ignored (container has no equivalent)
+  warnings: services.web: networks.back.interface_name: ignored (container has no equivalent)
+  warnings: services.web: networks.back.ipv4_address: ignored (container has no equivalent)
+  warnings: services.web: networks.back.ipv6_address: ignored (container has no equivalent)
+  warnings: services.web: networks.back.link_local_ips: ignored (container has no equivalent)
+  warnings: services.web: networks.back.priority: ignored (container has no equivalent)
+  warnings: services.web: networks.front.driver_opts: ignored (container has no equivalent)
+  warnings: services.web: networks.front.gw_priority: ignored (container has no equivalent)
+  warnings: services.web: networks.front.interface_name: ignored (container has no equivalent)
+  warnings: services.web: networks.front.ipv4_address: ignored (container has no equivalent)
+  warnings: services.web: networks.front.ipv6_address: ignored (container has no equivalent)
+  warnings: services.web: networks.front.link_local_ips: ignored (container has no equivalent)
+  warnings: services.web: networks.front.priority: ignored (container has no equivalent)
+  warnings: services.web: oom_kill_disable: ignored (container has no equivalent)
+  warnings: services.web: oom_score_adj: ignored (container has no equivalent)
+  warnings: services.web: pid: ignored (container has no equivalent)
+  warnings: services.web: pids_limit: ignored (container has no equivalent)
+  warnings: services.web: privileged: ignored (container has no equivalent)
+  warnings: services.web: restart: ignored (container has no equivalent)
+  warnings: services.web: runtime: ignored (container has no equivalent)
+  warnings: services.web: security_opt: ignored (container has no equivalent)
+  warnings: services.web: stop_signal: ignored (container has no equivalent)
+  warnings: services.web: storage_opt: ignored (container has no equivalent)
+  warnings: services.web: sysctls: ignored (container has no equivalent)
+  warnings: services.web: userns_mode: ignored (container has no equivalent)
+  warnings: services.web: uts: ignored (container has no equivalent)
+  warnings: services.web: volume_driver: ignored (container has no equivalent)
+  warnings: services.web: volumes.consistency: ignored (container has no equivalent)
+  warnings: services.web: volumes.volume.labels: ignored (container has no equivalent)
+  warnings: services.web: volumes.volume.nocopy: ignored (container has no equivalent)
+  warnings: services.web: volumes.volume.subpath: ignored (container has no equivalent)
+  warnings: services.web: volumes_from: ignored (container has no equivalent)
+
+StartContainers
+  argv: ["start" "proj-web-1"]
+
+StopContainers
+  argv: ["stop" "--time" "10" "proj-web-1"]
+
+RemoveContainers
+  argv: ["delete" "--force" "proj-web-1"]
+  warnings: containers.proj-web-1: volumes: ignored (container keeps anonymous volumes; run container volume prune)
+
+RemoveNetwork
+  argv: ["network" "delete" "proj_front"]
+
+RemoveVolume
+  argv: ["volume" "delete" "proj_data"]
+
+WaitContainer
+  argv: []
+
+ListContainers
+  argv: ["list" "--all" "--format" "json"]
+
+ListNetworks
+  argv: ["network" "list" "--format" "json"]
+
+ListVolumes
+  argv: ["volume" "list" "--format" "json"]
+
+ListImages
+  argv: ["image" "list" "--format" "json"]
+
+InspectContainer
+  argv: ["inspect" "proj-web-1"]
+
+Logs
+  argv: ["logs" "--follow" "-n" "10" "proj-web-1"]
+

@@ -1,0 +1,40 @@
+services:
+  web:
+    image: nginx:1.27
+    ports:
+      - "127.0.0.1:8080:80"
+      - "8443:443"
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - front
+      - back
+    volumes:
+      - logs:/var/log/nginx
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_PASSWORD: secret
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - back
+    volumes:
+      - data:/var/lib/postgresql/data
+
+networks:
+  front:
+    name: edge
+  back:
+    external: true
+
+volumes:
+  data: {}
+  logs:
+    name: nginx-logs

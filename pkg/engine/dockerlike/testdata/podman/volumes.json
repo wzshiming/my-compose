@@ -1,0 +1,32 @@
+[
+  {
+    "Name": "p_data",
+    "Driver": "local",
+    "Mountpoint": "/home/u/.local/share/containers/storage/volumes/p_data/_data",
+    "CreatedAt": "2026-10-17T09:59:59.000000000Z",
+    "Labels": {
+      "com.docker.compose.project": "p",
+      "com.docker.compose.volume": "data"
+    },
+    "Scope": "local",
+    "Options": {},
+    "MountCount": 1,
+    "NeedsCopyUp": false,
+    "NeedsChown": false,
+    "LockNumber": 6
+  },
+  {
+    "Name": "3f0e9c2b7a1d4e6f8b0a2c4e6f8a0b2c4d6e8f0a1b3c5d7e9f1a3b5c7d9e1f3a",
+    "Driver": "local",
+    "Mountpoint": "/home/u/.local/share/containers/storage/volumes/3f0e9c2b7a1d4e6f8b0a2c4e6f8a0b2c4d6e8f0a1b3c5d7e9f1a3b5c7d9e1f3a/_data",
+    "CreatedAt": "2026-10-17T10:00:00.000000000Z",
+    "Labels": {},
+    "Scope": "local",
+    "Options": {},
+    "MountCount": 0,
+    "NeedsCopyUp": true,
+    "NeedsChown": true,
+    "LockNumber": 7,
+    "Anonymous": true
+  }
+]

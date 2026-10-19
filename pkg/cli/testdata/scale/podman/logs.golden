@@ -1,0 +1,3 @@
+podman logs scale-cache
+podman logs scale-worker-1
+podman logs scale-worker-2

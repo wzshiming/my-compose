@@ -1,0 +1,5 @@
+podman stop scale-worker-1 scale-worker-2
+podman rm -f -v scale-worker-1 scale-worker-2
+podman stop scale-cache
+podman rm -f -v scale-cache
+podman network rm scale_default

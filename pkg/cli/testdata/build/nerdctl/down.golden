@@ -1,0 +1,5 @@
+nerdctl stop build-proxy-1
+nerdctl rm -f build-proxy-1
+nerdctl stop build-app-1
+nerdctl rm -f build-app-1
+nerdctl network rm build_default

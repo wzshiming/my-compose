@@ -1,0 +1,2 @@
+docker logs build-app-1
+docker logs build-proxy-1

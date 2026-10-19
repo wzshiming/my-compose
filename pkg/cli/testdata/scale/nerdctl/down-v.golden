@@ -1,0 +1,5 @@
+nerdctl stop scale-worker-1 scale-worker-2
+nerdctl rm -f -v scale-worker-1 scale-worker-2
+nerdctl stop scale-cache
+nerdctl rm -f -v scale-cache
+nerdctl network rm scale_default

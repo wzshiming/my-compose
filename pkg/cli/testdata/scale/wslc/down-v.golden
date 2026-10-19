@@ -1,0 +1,5 @@
+wslc stop scale-worker-1 scale-worker-2
+wslc rm -f -v scale-worker-1 scale-worker-2
+wslc stop scale-cache
+wslc rm -f -v scale-cache
+wslc network rm scale_default

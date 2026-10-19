@@ -1,0 +1,5 @@
+container stop scale-worker-1 scale-worker-2
+container delete --force scale-worker-1 scale-worker-2
+container stop scale-cache
+container delete --force scale-cache
+container network delete scale_default

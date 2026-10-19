@@ -1,0 +1,1 @@
+podman ps -a --filter label=com.docker.compose.project=web --format json

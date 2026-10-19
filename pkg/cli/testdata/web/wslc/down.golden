@@ -1,0 +1,5 @@
+wslc stop web-web-1
+wslc rm -f web-web-1
+wslc stop web-db-1
+wslc rm -f web-db-1
+wslc network rm edge
