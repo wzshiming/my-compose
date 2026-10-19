@@ -31,6 +31,7 @@ e2e-web-2 | web-ready
 up again: exit 0 stdout-empty=true stderr-empty=true
 ## down
 down: exit 0
+ps -a: exit 0
 ps -a: none
 network e2e_backend: absent
 volume e2e_data: present

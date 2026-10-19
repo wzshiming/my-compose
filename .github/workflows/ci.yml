@@ -57,7 +57,7 @@ jobs:
           docker info
       - name: Smoke podman
         if: matrix.engine == 'podman'
-        # Rootless as preinstalled; switch to rootful if healthchecks never fire.
+        # The preinstalled rootless podman is used as is; its healthchecks work on ubuntu-24.04.
         run: podman info
       - name: Install nerdctl
         if: matrix.engine == 'nerdctl'

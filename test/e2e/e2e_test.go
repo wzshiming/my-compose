@@ -60,18 +60,21 @@ func TestStack(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	var tr []string
 	record := os.Getenv("MY_COMPOSE_E2E_RECORD")
 	if record != "" {
 		if err := os.MkdirAll(record, 0o755); err != nil {
 			t.Fatal(err)
 		}
+		// Written from Cleanup so a Fatal mid-run still leaves the partial transcript.
+		t.Cleanup(func() { write(t, filepath.Join(record, "transcript.txt"), []byte(strings.Join(tr, "\n")+"\n")) })
 	}
 	s := &stack{t: t, dir: dir, runner: &runner.Runner{Engine: e, Stderr: os.Stderr}}
 	s.run("down", "-v") // leftovers of an interrupted run
 	t.Cleanup(func() { s.run("down", "-v") })
 
 	code, _, _ := s.run("up")
-	tr := []string{"## up", fmt.Sprintf("up: exit %d", code)}
+	tr = append(tr, "## up", fmt.Sprintf("up: exit %d", code))
 	if record != "" {
 		for file, step := range map[string]plan.Step{
 			"ps.json":              plan.ListContainers{Project: project},
@@ -116,7 +119,9 @@ func TestStack(t *testing.T) {
 
 	code, _, _ = s.run("down")
 	tr = append(tr, "## down", fmt.Sprintf("down: exit %d", code))
-	if _, left := s.ps("-a"); len(left) == 0 {
+	code, left := s.ps("-a")
+	tr = append(tr, fmt.Sprintf("ps -a: exit %d", code))
+	if len(left) == 0 {
 		tr = append(tr, "ps -a: none")
 	} else {
 		tr = append(tr, left...)
@@ -127,9 +132,6 @@ func TestStack(t *testing.T) {
 	tr = append(tr, "## down -v", fmt.Sprintf("down -v: exit %d", code), s.has("volume", plan.ListVolumes{}, "e2e_data"))
 
 	got := strings.Join(tr, "\n") + "\n"
-	if record != "" {
-		write(t, filepath.Join(record, "transcript.txt"), []byte(got))
-	}
 	golden := filepath.Join(dir, "transcript.golden")
 	if *update {
 		write(t, golden, []byte(got))
@@ -145,7 +147,7 @@ func TestStack(t *testing.T) {
 		for w[i] == g[i] {
 			i++
 		}
-		t.Errorf("transcript differs from %s at line %d:\n  golden: %s\n  output: %s\nrun go test -tags e2e ./test/e2e -args -update after reviewing", golden, i+1, w[i], g[i])
+		t.Errorf("transcript differs from %s at line %d:\n  golden: %q\n  output: %q\nrun go test -tags e2e ./test/e2e -args -update after reviewing", golden, i+1, w[i], g[i])
 	}
 }
 
@@ -200,6 +202,9 @@ func (s *stack) has(kind string, step plan.Step, name string) string {
 // ps runs ps --format json with args and returns its exit code and one line per container sorted by name: name service number image status health exit_code ports.
 func (s *stack) ps(args ...string) (int, []string) {
 	code, out, _ := s.run(append([]string{"ps", "--format", "json"}, args...)...)
+	if code != 0 {
+		return code, nil
+	}
 	var entries []struct {
 		Name, Service, Image, Status, Health string
 		Number                               int
