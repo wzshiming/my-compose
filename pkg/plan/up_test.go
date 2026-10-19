@@ -61,6 +61,7 @@ func TestAC5Idempotent(t *testing.T) {
 
 func TestAC6BuildTrigger(t *testing.T) {
 	imagePresent := State{Live: true, Images: []string{"docker.io/library/nginx:latest"}}
+	localhostBuilt := State{Live: true, Images: []string{"localhost/p-app:latest"}}
 	tests := []struct {
 		name  string
 		yaml  string
@@ -73,6 +74,8 @@ func TestAC6BuildTrigger(t *testing.T) {
 		{"pull_policy build rebuilds a present image", `{services: {web: {build: ., image: nginx, pull_policy: build}}}`, imagePresent, UpOptions{}, []string{"nginx"}},
 		{"Build option rebuilds a present image", `{services: {web: {build: ., image: nginx}}}`, imagePresent, UpOptions{Build: true}, []string{"nginx"}},
 		{"shared tag is built once", `{services: {a: {build: ., image: shared}, b: {build: ., image: shared}}}`, State{}, UpOptions{}, []string{"shared"}},
+		{"built image listed under localhost/ is not rebuilt", `{services: {app: {build: .}}}`, localhostBuilt, UpOptions{}, nil},
+		{"built image missing from a live state is built", `{services: {app: {build: .}}}`, State{Live: true}, UpOptions{}, []string{"p-app"}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
