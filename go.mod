@@ -5,6 +5,7 @@ go 1.25
 require (
 	github.com/compose-spec/compose-go/v2 v2.16.1
 	github.com/distribution/reference v0.5.0
+	github.com/sirupsen/logrus v1.10.1
 	github.com/spf13/cobra v1.10.2
 )
 
@@ -16,7 +17,6 @@ require (
 	github.com/mattn/go-shellwords v1.0.12 // indirect
 	github.com/opencontainers/go-digest v1.0.0 // indirect
 	github.com/santhosh-tekuri/jsonschema/v6 v6.0.1 // indirect
-	github.com/sirupsen/logrus v1.10.1 // indirect
 	github.com/spf13/pflag v1.0.9 // indirect
 	github.com/xhit/go-str2duration/v2 v2.1.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.5 // indirect

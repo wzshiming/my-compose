@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"runtime"
 
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 
 	"github.com/wzshiming/my-compose/pkg/engine"
@@ -47,7 +48,21 @@ func candidates() []engine.Engine {
 	return append(cs, applecontainer.New())
 }
 
+// logFormatter prints compose-go's logrus entries like the planner's "warning: ..." lines.
+type logFormatter struct{}
+
+func (logFormatter) Format(e *logrus.Entry) ([]byte, error) {
+	return fmt.Appendf(nil, "%s: %s\n", e.Level, e.Message), nil
+}
+
 func (a *app) run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
+	std := logrus.StandardLogger()
+	out, formatter, level := std.Out, std.Formatter, std.GetLevel()
+	defer func() { std.SetOutput(out); std.SetFormatter(formatter); std.SetLevel(level) }()
+	std.SetOutput(stderr)
+	std.SetFormatter(logFormatter{})
+	std.SetLevel(logrus.WarnLevel)
+
 	g := &globals{}
 	started := false
 	root := &cobra.Command{
