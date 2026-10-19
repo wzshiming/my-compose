@@ -91,6 +91,30 @@ func TestAC10NewState(t *testing.T) {
 			t.Errorf("Images = %v, want %v in any order", got, want)
 		}
 	})
+	t.Run("localhost/ image of a local build is folded into the bare name", func(t *testing.T) {
+		got := NewState(loadProject(t, stateYAML), nil, nil, nil, []string{"localhost/e2e-app:latest"}).Images
+		if want := []string{"docker.io/library/e2e-app:latest"}; !slices.Equal(got, want) {
+			t.Errorf("Images = %v, want %v", got, want)
+		}
+	})
+	t.Run("normalizeImage equates localhost/ with the bare name", func(t *testing.T) {
+		tests := []struct{ in, want string }{
+			{"localhost/e2e-app:latest", "docker.io/library/e2e-app:latest"},
+			{"localhost/e2e-app", "docker.io/library/e2e-app:latest"},
+			{"e2e-app", "docker.io/library/e2e-app:latest"},
+			{"e2e-app:latest", "docker.io/library/e2e-app:latest"},
+			{"localhost/ns/foo:1", "docker.io/ns/foo:1"},
+			{"localhost:5000/foo:1", "localhost:5000/foo:1"},
+			{"nginx", "docker.io/library/nginx:latest"},
+			{"e2e-app:", "e2e-app:"},
+			{"", ""},
+		}
+		for _, tt := range tests {
+			if got := normalizeImage(tt.in); got != tt.want {
+				t.Errorf("normalizeImage(%q) = %q, want %q", tt.in, got, tt.want)
+			}
+		}
+	})
 }
 
 func TestG1NewStateIsLive(t *testing.T) {
