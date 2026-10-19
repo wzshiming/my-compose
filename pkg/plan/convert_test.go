@@ -2,9 +2,11 @@ package plan
 
 import (
 	"cmp"
+	"path/filepath"
 	"reflect"
 	"regexp"
 	"slices"
+	"strings"
 	"testing"
 	"time"
 
@@ -72,9 +74,10 @@ networks:
 volumes:
   data: {}
 `
+	files := []string{filepath.Join(tstProjDir, "compose.yaml"), filepath.Join(tstProjDir, "compose.prod.yaml")}
 	up := func(t *testing.T) *Plan {
 		p := loadProject(t, yaml)
-		p.ComposeFiles = []string{"/tmp/proj/compose.yaml", "/tmp/proj/compose.prod.yaml"}
+		p.ComposeFiles = files
 		plan, _ := mustUp(t, p, State{}, healthCaps, UpOptions{})
 		return plan
 	}
@@ -85,8 +88,8 @@ volumes:
 			LabelService:         "web",
 			LabelContainerNumber: "1",
 			LabelOneoff:          "False",
-			LabelWorkingDir:      "/tmp/proj",
-			LabelConfigFiles:     "/tmp/proj/compose.yaml,/tmp/proj/compose.prod.yaml",
+			LabelWorkingDir:      tstProjDir,
+			LabelConfigFiles:     strings.Join(files, ","),
 			"app":                "demo",
 		}
 		for k, v := range want {
@@ -231,14 +234,14 @@ func TestContainerSpecConversion(t *testing.T) {
 			func(c ContainerSpec) any { return c.ExtraHosts }, []string{"alpha:10.0.0.1", "zeta:10.0.0.3"}},
 		{"volume mounts use engine volume names", `{services: {web: {image: nginx, volumes: ["data:/data", "/anon", "./src:/src:ro"]}}, volumes: {data: {}}}`, nil,
 			func(c ContainerSpec) any { return testMounts(c.Mounts) },
-			[]testMount{{"volume", "p_data", "/data", false}, {"volume", "", "/anon", false}, {"bind", "/tmp/proj/src", "/src", true}}},
+			[]testMount{{"volume", "p_data", "/data", false}, {"volume", "", "/anon", false}, {"bind", filepath.Join(tstProjDir, "src"), "/src", true}}},
 		{"file secrets and configs are read-only binds", `{services: {web: {image: nginx, secrets: [tok], configs: [cfg]}}, secrets: {tok: {file: ./tok.txt}}, configs: {cfg: {file: ./cfg.txt}}}`, nil,
 			func(c ContainerSpec) any {
 				ms := testMounts(c.Mounts)
 				slices.SortFunc(ms, func(a, b testMount) int { return cmp.Compare(a.Target, b.Target) })
 				return ms
 			},
-			[]testMount{{"bind", "/tmp/proj/cfg.txt", "/cfg", true}, {"bind", "/tmp/proj/tok.txt", "/run/secrets/tok", true}}},
+			[]testMount{{"bind", filepath.Join(tstProjDir, "cfg.txt"), "/cfg", true}, {"bind", filepath.Join(tstProjDir, "tok.txt"), "/run/secrets/tok", true}}},
 		{"ulimits sorted, single value sets soft and hard", `{services: {web: {image: nginx, ulimits: {nproc: 65535, nofile: {soft: 1024, hard: 2048}}}}}`, nil,
 			func(c ContainerSpec) any { return c.Ulimits }, []Ulimit{{"nofile", 1024, 2048}, {"nproc", 65535, 65535}}},
 		{"cpus and memory from service attributes", `{services: {web: {image: nginx, cpus: 1.5, mem_limit: 512m, mem_reservation: 128m}}}`, nil,
@@ -469,9 +472,10 @@ func TestS5NetworkKey(t *testing.T) {
 }
 
 func TestS5DockerfilePath(t *testing.T) {
+	srv := tstHostAbs("/srv/Dockerfile")
 	tests := []struct{ name, build, want string }{
-		{"relative dockerfile is joined to a local context", `{context: ., dockerfile: build/Dockerfile.dev}`, "/tmp/proj/build/Dockerfile.dev"},
-		{"absolute dockerfile is kept", `{context: ., dockerfile: /srv/Dockerfile}`, "/srv/Dockerfile"},
+		{"relative dockerfile is joined to a local context", `{context: ., dockerfile: build/Dockerfile.dev}`, filepath.Join(tstProjDir, "build", "Dockerfile.dev")},
+		{"absolute dockerfile is kept", `{context: ., dockerfile: '` + srv + `'}`, srv},
 		{"relative dockerfile is kept for a url context", `{context: "https://github.com/x/y.git", dockerfile: build/Dockerfile.dev}`, "build/Dockerfile.dev"},
 		{"relative dockerfile is kept for a git ssh context", `{context: "git@github.com:x/y.git", dockerfile: build/Dockerfile.dev}`, "build/Dockerfile.dev"},
 		{"relative dockerfile is kept for a github shorthand context", `{context: github.com/x/y, dockerfile: build/Dockerfile.dev}`, "build/Dockerfile.dev"},

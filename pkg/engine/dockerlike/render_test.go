@@ -110,7 +110,7 @@ func tstFirstDiff(want, got string) string {
 			gl = g[i]
 		}
 		if wl != gl {
-			return fmt.Sprintf("line %d:\n  golden: %s\n  render: %s", i+1, wl, gl)
+			return fmt.Sprintf("line %d:\n  golden: %q\n  render: %q", i+1, wl, gl)
 		}
 	}
 	return "no differing line (trailing whitespace?)"

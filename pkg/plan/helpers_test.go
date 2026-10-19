@@ -3,6 +3,7 @@ package plan
 import (
 	"context"
 	"fmt"
+	"path/filepath"
 	"slices"
 	"strconv"
 	"strings"
@@ -14,11 +15,23 @@ import (
 
 var healthCaps = Capabilities{Healthcheck: true}
 
-// loadProject loads yaml as project "p" in /tmp/proj without reading files or the process environment.
+// tstProjDir is the root of every loaded project: /tmp/proj on Unix, the same on the current drive on Windows, so compose-go joins paths to it on both.
+var tstProjDir = tstHostAbs("/tmp/proj")
+
+// tstHostAbs returns a Unix-style absolute path as the host spells it.
+func tstHostAbs(p string) string {
+	abs, err := filepath.Abs(p)
+	if err != nil {
+		panic(err)
+	}
+	return abs
+}
+
+// loadProject loads yaml as project "p" in tstProjDir without reading files or the process environment.
 func loadProject(t *testing.T, yaml string) *types.Project {
 	t.Helper()
 	p, err := loader.LoadWithContext(context.Background(), types.ConfigDetails{
-		WorkingDir:  "/tmp/proj",
+		WorkingDir:  tstProjDir,
 		ConfigFiles: []types.ConfigFile{{Filename: "compose.yaml", Content: []byte(yaml)}},
 		Environment: types.Mapping{},
 	}, func(o *loader.Options) { o.SetProjectName("p", true) })

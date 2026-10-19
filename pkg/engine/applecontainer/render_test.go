@@ -141,7 +141,7 @@ func tstFirstDiff(want, got string) string {
 			gl = g[i]
 		}
 		if wl != gl {
-			return fmt.Sprintf("line %d:\n  want: %s\n  got:  %s", i+1, wl, gl)
+			return fmt.Sprintf("line %d:\n  want: %q\n  got:  %q", i+1, wl, gl)
 		}
 	}
 	return "no differing line"

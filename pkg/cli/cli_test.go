@@ -7,12 +7,14 @@ import (
 	"path/filepath"
 	"reflect"
 	"regexp"
+	"runtime"
 	"slices"
 	"strings"
 	"testing"
 	"time"
 
 	composecli "github.com/compose-spec/compose-go/v2/cli"
+	"github.com/sirupsen/logrus"
 
 	"github.com/wzshiming/my-compose/pkg/engine"
 	"github.com/wzshiming/my-compose/pkg/engine/enginetest"
@@ -465,6 +467,10 @@ func TestLogrusWarnings(t *testing.T) {
 		if strings.Contains(errb, "level=") || strings.Contains(errb, "WARN[") {
 			t.Errorf("%q: stderr %q uses the default logrus format", args, errb)
 		}
+		std := logrus.StandardLogger()
+		if _, text := std.Formatter.(*logrus.TextFormatter); std.Out != os.Stderr || !text || std.GetLevel() != logrus.InfoLevel {
+			t.Errorf("%q: logrus after the run has Out %T, Formatter %T, Level %v; want the defaults os.Stderr, *logrus.TextFormatter and info restored", args, std.Out, std.Formatter, std.GetLevel())
+		}
 	}
 }
 
@@ -561,6 +567,9 @@ func TestMainNilArgs(t *testing.T) {
 }
 
 func TestSignalExitCode(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("signal death is a Unix concept")
+	}
 	tstIsolateEnv(t)
 	dir := tstProject(t, tstWebYAML)
 	f := tstFake("fake")

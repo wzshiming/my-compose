@@ -11,8 +11,11 @@ import (
 
 // testdata/<variant> holds each CLI's list and inspect output for the same three containers
 // (p-web-1 running and healthy, p-worker-2 exited 1, p-init-1 created): docker and nerdctl
-// print JSON lines, podman prints arrays. The wslc samples are constructed from the docker
-// shapes as arrays with State and HealthStatus fields and await re-recording on Windows.
+// print JSON lines, podman prints arrays. The wslc samples are arrays built from the docker
+// shapes and checked against wslc 3.0.1, which prints JSON lines (decodeList takes both) with
+// every field parse.go reads spelled the same: Names, k=v Labels, Ports, lowercase State and
+// HealthStatus, and in inspect State.Health.Status, Config.Image, Config.Cmd and a /-prefixed
+// Name; the exited and created rows stay constructed since that run had only running containers.
 // The podman inspect samples also cover two older shapes: State.Healthcheck instead of
 // State.Health (running) and a missing Config.Image falling back to ImageName (created).
 

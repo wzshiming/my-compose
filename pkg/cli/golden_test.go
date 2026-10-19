@@ -9,11 +9,15 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"testing"
 )
 
 var tstUpdate = flag.Bool("update", false, "rewrite golden files")
+
+// tstQuotedDir matches a dry-run token that runner.Quote single-quoted only because the native testdata path held backslashes.
+var tstQuotedDir = regexp.MustCompile(`'([^'\n]*<DIR>[^'\n]*)'`)
 
 var tstGoldenEngines = []string{"docker", "podman", "nerdctl", "wslc", "container"}
 
@@ -58,7 +62,10 @@ func TestGolden(t *testing.T) {
 					for _, line := range tstLines(errb.String()) {
 						content += "# stderr: " + line + "\n"
 					}
-					content = strings.ReplaceAll(content, dir, "<DIR>")
+					content = strings.ReplaceAll(filepath.ToSlash(content), filepath.ToSlash(dir), "<DIR>")
+					if filepath.Separator != '/' {
+						content = tstQuotedDir.ReplaceAllString(content, "$1")
+					}
 
 					golden := filepath.Join(dir, eng, cmd.name+".golden")
 					if *tstUpdate {
@@ -97,7 +104,7 @@ func tstFirstDiff(want, got string) string {
 			gl = g[i]
 		}
 		if wl != gl {
-			return fmt.Sprintf("line %d:\n  golden: %s\n  output: %s", i+1, wl, gl)
+			return fmt.Sprintf("line %d:\n  golden: %q\n  output: %q", i+1, wl, gl)
 		}
 	}
 	return "no differing line (trailing whitespace?)"
