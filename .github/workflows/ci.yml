@@ -65,8 +65,8 @@ jobs:
         run: |
           base=https://github.com/containerd/nerdctl/releases/download/v2.4.1
           tarball=nerdctl-full-2.4.1-linux-amd64.tar.gz
-          curl -fsSL --retry 3 -O "$base/$tarball" -O "$base/SHA256SUMS"
-          sha256sum -c --ignore-missing SHA256SUMS
+          curl -fsSL --retry 3 -O "$base/$tarball"
+          echo "ff018f11ac2f1354bf7b3aaaca6e0b52d81139c746a89134744d0b7be3a0e62f  nerdctl-full-2.4.1-linux-amd64.tar.gz" | sha256sum -c -
           sudo tar Cxzf /usr/local "$tarball"
           # The bundled unit would shadow the runner's own containerd.service.
           sudo rm -f /usr/local/lib/systemd/system/containerd.service

@@ -85,17 +85,19 @@ func TestStack(t *testing.T) {
 	}
 	tr = append(tr, s.has("network", plan.ListNetworks{}, "e2e_backend"), s.has("volume", plan.ListVolumes{}, "e2e_data"), s.has("image", plan.ListImages{}, "e2e-app:latest"))
 
-	tr = append(tr, "## ps")
-	tr = append(tr, s.ps()...)
-	tr = append(tr, "## ps -a")
-	tr = append(tr, s.ps("-a")...)
-	_, out, _ := s.run("ps", "-q")
+	code, lines := s.ps()
+	tr = append(tr, "## ps", fmt.Sprintf("ps: exit %d", code))
+	tr = append(tr, lines...)
+	code, lines = s.ps("-a")
+	tr = append(tr, "## ps -a", fmt.Sprintf("ps -a: exit %d", code))
+	tr = append(tr, lines...)
+	code, out, _ := s.run("ps", "-q")
 	names := strings.Fields(out)
 	slices.Sort(names)
-	tr = append(tr, "## ps -q")
+	tr = append(tr, "## ps -q", fmt.Sprintf("ps -q: exit %d", code))
 	tr = append(tr, names...)
 
-	_, out, _ = s.run("logs")
+	code, out, _ = s.run("logs")
 	var logs []string
 	for _, line := range strings.Split(strings.ReplaceAll(out, "\r", ""), "\n") {
 		if prefix, msg, ok := strings.Cut(line, " | "); ok {
@@ -106,7 +108,7 @@ func TestStack(t *testing.T) {
 		}
 	}
 	slices.Sort(logs)
-	tr = append(tr, "## logs")
+	tr = append(tr, "## logs", fmt.Sprintf("logs: exit %d", code))
 	tr = append(tr, logs...)
 
 	code, out, errOut := s.run("up")
@@ -114,7 +116,7 @@ func TestStack(t *testing.T) {
 
 	code, _, _ = s.run("down")
 	tr = append(tr, "## down", fmt.Sprintf("down: exit %d", code))
-	if left := s.ps("-a"); len(left) == 0 {
+	if _, left := s.ps("-a"); len(left) == 0 {
 		tr = append(tr, "ps -a: none")
 	} else {
 		tr = append(tr, left...)
@@ -195,9 +197,9 @@ func (s *stack) has(kind string, step plan.Step, name string) string {
 	return fmt.Sprintf("%s %s: %s", kind, name, state)
 }
 
-// ps runs ps --format json with args and returns one line per container sorted by name: name service number image status health exit_code ports.
-func (s *stack) ps(args ...string) []string {
-	_, out, _ := s.run(append([]string{"ps", "--format", "json"}, args...)...)
+// ps runs ps --format json with args and returns its exit code and one line per container sorted by name: name service number image status health exit_code ports.
+func (s *stack) ps(args ...string) (int, []string) {
+	code, out, _ := s.run(append([]string{"ps", "--format", "json"}, args...)...)
 	var entries []struct {
 		Name, Service, Image, Status, Health string
 		Number                               int
@@ -227,7 +229,7 @@ func (s *stack) ps(args ...string) []string {
 		lines = append(lines, fmt.Sprintf("%s %s %d %s %s %s %d %s", c.Name, c.Service, c.Number, image(c.Image), c.Status, c.Health, c.ExitCode, cmp.Or(strings.Join(ports, ","), "-")))
 	}
 	slices.Sort(lines)
-	return lines
+	return code, lines
 }
 
 // image reduces equivalent references to name:tag, so docker.io/library/busybox:1.36 and localhost/e2e-app:latest read busybox:1.36 and e2e-app:latest.
