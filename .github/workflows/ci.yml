@@ -1,0 +1,144 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-26, windows-2025]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache: true
+      - name: gofmt
+        if: runner.os == 'Linux'
+        run: |
+          unformatted=$(gofmt -l .)
+          test -z "$unformatted" || { echo "$unformatted"; exit 1; }
+      - name: go vet
+        run: go vet ./...
+      - name: go test
+        run: go test ${{ runner.os == 'Linux' && '-race' || '' }} ./...
+
+  e2e:
+    strategy:
+      fail-fast: false
+      matrix:
+        engine: [docker, podman, nerdctl]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache: true
+      - name: Smoke docker
+        if: matrix.engine == 'docker'
+        run: |
+          docker version
+          docker info
+      - name: Smoke podman
+        if: matrix.engine == 'podman'
+        # Rootless as preinstalled; switch to rootful if healthchecks never fire.
+        run: podman info
+      - name: Install nerdctl
+        if: matrix.engine == 'nerdctl'
+        working-directory: ${{ runner.temp }}
+        run: |
+          base=https://github.com/containerd/nerdctl/releases/download/v2.4.1
+          tarball=nerdctl-full-2.4.1-linux-amd64.tar.gz
+          curl -fsSL --retry 3 -O "$base/$tarball" -O "$base/SHA256SUMS"
+          sha256sum -c --ignore-missing SHA256SUMS
+          sudo tar Cxzf /usr/local "$tarball"
+          # The bundled unit would shadow the runner's own containerd.service.
+          sudo rm -f /usr/local/lib/systemd/system/containerd.service
+          sudo systemctl daemon-reload
+          sudo systemctl enable --now buildkit
+          # Healthchecks only work rootful, so PATH gets a sudo shim first.
+          mkdir -p "$RUNNER_TEMP/bin"
+          cat > "$RUNNER_TEMP/bin/nerdctl" <<'EOF'
+          #!/bin/sh
+          exec sudo -n /usr/local/bin/nerdctl "$@"
+          EOF
+          chmod +x "$RUNNER_TEMP/bin/nerdctl"
+          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
+      - name: Smoke nerdctl
+        if: matrix.engine == 'nerdctl'
+        run: |
+          sudo nerdctl version
+          nerdctl info
+      - name: Run e2e
+        env:
+          MY_COMPOSE_E2E_ENGINE: ${{ matrix.engine }}
+          MY_COMPOSE_E2E_RECORD: ${{ runner.temp }}/engine-samples
+        run: go test -tags e2e -count=1 -timeout 20m -v ./test/e2e
+      - name: Dump engine state
+        if: failure()
+        env:
+          ENGINE: ${{ matrix.engine }}
+        run: |
+          "$ENGINE" ps -a || true
+          "$ENGINE" network ls || true
+          "$ENGINE" volume ls || true
+          "$ENGINE" image ls || true
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: engine-samples-${{ matrix.engine }}
+          path: ${{ runner.temp }}/engine-samples
+          if-no-files-found: warn
+
+  e2e-wslc:
+    runs-on: windows-2025
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache: true
+      - name: Smoke WSL
+        run: wsl --version
+      - name: Smoke wslc
+        run: wslc version
+      - name: Start the WSL container VM
+        # First VM start; separates an unusable WSL from a my-compose problem.
+        run: wslc run --rm hello-world
+      - name: Run e2e
+        env:
+          MY_COMPOSE_E2E_ENGINE: wslc
+          MY_COMPOSE_E2E_RECORD: ${{ runner.temp }}\engine-samples
+        run: go test -tags e2e -count=1 -timeout 20m -v ./test/e2e
+      - name: Dump engine state
+        if: failure()
+        run: |
+          $ErrorActionPreference = 'Continue'
+          wslc ps -a
+          wslc network ls
+          wslc volume ls
+          wslc image ls
+          exit 0
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: engine-samples-wslc
+          path: ${{ runner.temp }}\engine-samples
+          if-no-files-found: warn
