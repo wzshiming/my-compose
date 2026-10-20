@@ -1,0 +1,51 @@
+[
+  {
+    "id": "sha256:1a2b3c4d5e6f1a2b3c4d5e6f1a2b3c4d5e6f1a2b3c4d5e6f1a2b3c4d5e6f1a2b",
+    "configuration": {
+      "name": "docker.io/library/nginx:1.27",
+      "description": {
+        "reference": "docker.io/library/nginx:1.27",
+        "descriptor": {
+          "mediaType": "application/vnd.oci.image.index.v1+json",
+          "digest": "sha256:1a2b3c4d5e6f1a2b3c4d5e6f1a2b3c4d5e6f1a2b3c4d5e6f1a2b3c4d5e6f1a2b",
+          "size": 10234
+        }
+      },
+      "creationDate": 782345500.0
+    },
+    "variants": [
+      {
+        "platform": {"os": "linux", "architecture": "arm64", "variant": "v8"},
+        "size": 71303168,
+        "config": {"created": "2026-09-30T10:00:00Z"}
+      },
+      {
+        "platform": {"os": "linux", "architecture": "amd64"},
+        "size": 73400320,
+        "config": {"created": "2026-09-30T10:00:00Z"}
+      }
+    ]
+  },
+  {
+    "id": "sha256:9f8e7d6c5b4a9f8e7d6c5b4a9f8e7d6c5b4a9f8e7d6c5b4a9f8e7d6c5b4a9f8e",
+    "configuration": {
+      "name": "docker.io/library/postgres:16",
+      "description": {
+        "reference": "docker.io/library/postgres:16",
+        "descriptor": {
+          "mediaType": "application/vnd.oci.image.index.v1+json",
+          "digest": "sha256:9f8e7d6c5b4a9f8e7d6c5b4a9f8e7d6c5b4a9f8e7d6c5b4a9f8e7d6c5b4a9f8e",
+          "size": 20468
+        }
+      },
+      "creationDate": 782345400.0
+    },
+    "variants": [
+      {
+        "platform": {"os": "linux", "architecture": "arm64", "variant": "v8"},
+        "size": 157286400,
+        "config": {"created": "2026-09-28T08:00:00Z"}
+      }
+    ]
+  }
+]

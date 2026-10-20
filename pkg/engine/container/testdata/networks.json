@@ -1,0 +1,36 @@
+[
+  {
+    "id": "default",
+    "configuration": {
+      "name": "default",
+      "mode": "nat",
+      "labels": {},
+      "plugin": "vmnet",
+      "options": {},
+      "creationDate": 782000000.0
+    },
+    "status": {
+      "ipv4Subnet": "192.168.64.0/24",
+      "ipv4Gateway": "192.168.64.1"
+    }
+  },
+  {
+    "id": "proj_front",
+    "configuration": {
+      "name": "proj_front",
+      "mode": "nat",
+      "ipv4Subnet": "192.168.65.0/24",
+      "labels": {
+        "com.docker.compose.network": "front",
+        "com.docker.compose.project": "proj"
+      },
+      "plugin": "vmnet",
+      "options": {},
+      "creationDate": 782345600.0
+    },
+    "status": {
+      "ipv4Subnet": "192.168.65.0/24",
+      "ipv4Gateway": "192.168.65.1"
+    }
+  }
+]
