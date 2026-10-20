@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"runtime"
 	"strings"
 	"testing"
 
@@ -126,6 +127,9 @@ func TestGolden(t *testing.T) {
 		}
 		if string(b) != content {
 			t.Errorf("Golden(update) wrote %q, want %q", b, content)
+		}
+		if runtime.GOOS == "windows" {
+			return // no POSIX permission bits: os.WriteFile's 0o644 lands as 0666
 		}
 		info, err := os.Stat(path)
 		if err != nil {
