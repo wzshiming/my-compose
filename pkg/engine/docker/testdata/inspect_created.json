@@ -1,0 +1,79 @@
+[
+    {
+        "Id": "2c3d4e5f60712c3d4e5f60712c3d4e5f60712c3d4e5f60712c3d4e5f60712c3d",
+        "Created": "2026-10-17T10:02:00.000000000Z",
+        "Path": "sleep",
+        "Args": [
+            "1"
+        ],
+        "State": {
+            "Status": "created",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "0001-01-01T00:00:00Z",
+            "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "Image": "sha256:6d3e4188a38af91b0c1577b9e88c53368926b2fe4e6d2a2a0a6ac0e4d1b4a3c2",
+        "Name": "/p-init-1",
+        "RestartCount": 0,
+        "Driver": "overlay2",
+        "Platform": "linux",
+        "HostConfig": {
+            "NetworkMode": "p_default",
+            "RestartPolicy": {
+                "Name": "no",
+                "MaximumRetryCount": 0
+            }
+        },
+        "Config": {
+            "Hostname": "2c3d4e5f6071",
+            "Domainname": "",
+            "User": "",
+            "Tty": false,
+            "OpenStdin": false,
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+            ],
+            "Cmd": [
+                "sleep",
+                "1"
+            ],
+            "Image": "busybox:1.36",
+            "Volumes": null,
+            "WorkingDir": "",
+            "Entrypoint": null,
+            "OnBuild": null,
+            "Labels": {
+                "com.docker.compose.container-number": "1",
+                "com.docker.compose.oneoff": "False",
+                "com.docker.compose.project": "p",
+                "com.docker.compose.project.config_files": "/a/compose.yaml,/a/override.yaml",
+                "com.docker.compose.project.working_dir": "/a",
+                "com.docker.compose.service": "init"
+            }
+        },
+        "NetworkSettings": {
+            "Bridge": "",
+            "Ports": {},
+            "Networks": {
+                "p_default": {
+                    "Aliases": [
+                        "init",
+                        "p-init-1"
+                    ],
+                    "NetworkID": "",
+                    "Gateway": "",
+                    "IPAddress": "",
+                    "IPPrefixLen": 0,
+                    "MacAddress": ""
+                }
+            }
+        }
+    }
+]
