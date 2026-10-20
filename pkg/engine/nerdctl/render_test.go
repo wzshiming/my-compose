@@ -6,6 +6,7 @@ import (
 	"slices"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/wzshiming/my-compose/pkg/engine/nerdctl"
 	"github.com/wzshiming/my-compose/pkg/plan"
@@ -136,6 +137,14 @@ func TestRunNetworks(t *testing.T) {
 			}),
 			argv: tstRunArgv([]string{"--network", "proj_front"}),
 		},
+		{
+			name: "link local ips are ignored",
+			step: tstRunStep(func(c *plan.ContainerSpec) {
+				c.Networks = []plan.NetworkAttachment{{Key: "front", Name: "proj_front", LinkLocalIPs: []string{"169.254.0.5"}}}
+			}),
+			argv:  tstRunArgv([]string{"--network", "proj_front"}),
+			warns: []tstWarn{tstIgnored(tstWeb, "networks.front.link_local_ips")},
+		},
 	})
 }
 
@@ -146,6 +155,9 @@ func TestRunVariantGaps(t *testing.T) {
 	tstRender(t, []tstRenderCase{
 		gap("links", func(c *plan.ContainerSpec) { c.Links = []string{"proj-db-1:db"} }),
 		gap("expose", func(c *plan.ContainerSpec) { c.Expose = []string{"8081"} }),
+		gap("healthcheck.start_interval", func(c *plan.ContainerSpec) {
+			c.Healthcheck = &plan.Healthcheck{StartInterval: 2 * time.Second}
+		}),
 	})
 }
 

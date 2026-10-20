@@ -6,6 +6,7 @@ import (
 	"slices"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/wzshiming/my-compose/pkg/engine"
 	"github.com/wzshiming/my-compose/pkg/engine/docker"
@@ -158,6 +159,22 @@ func TestRunNetworks(t *testing.T) {
 			argv:  tstRunArgv([]string{"--network", "proj_front", "--network-alias", "web", "--network-alias", "a", "--network", "name=proj_back,alias=web"}),
 			warns: []tstWarn{tstIgnored(tstWeb, "networks.back.ipv4_address")},
 		},
+		{
+			name: "ipv6 address is ignored",
+			step: tstRunStep(func(c *plan.ContainerSpec) {
+				c.Networks = []plan.NetworkAttachment{{Key: "front", Name: "proj_front", IPv6: "fd00::5"}}
+			}),
+			argv:  tstRunArgv([]string{"--network", "proj_front"}),
+			warns: []tstWarn{tstIgnored(tstWeb, "networks.front.ipv6_address")},
+		},
+		{
+			name: "link local ips are ignored",
+			step: tstRunStep(func(c *plan.ContainerSpec) {
+				c.Networks = []plan.NetworkAttachment{{Key: "front", Name: "proj_front", LinkLocalIPs: []string{"169.254.0.5"}}}
+			}),
+			argv:  tstRunArgv([]string{"--network", "proj_front"}),
+			warns: []tstWarn{tstIgnored(tstWeb, "networks.front.link_local_ips")},
+		},
 	})
 }
 
@@ -191,6 +208,9 @@ func TestRunVariantGaps(t *testing.T) {
 		gap("init", func(c *plan.ContainerSpec) { c.Init = tstPtr(true) }),
 		gap("platform", func(c *plan.ContainerSpec) { c.Platform = "linux/amd64" }),
 		gap("mac_address", func(c *plan.ContainerSpec) { c.MacAddress = "02:42:ac:1c:00:0a" }),
+		gap("healthcheck.start_interval", func(c *plan.ContainerSpec) {
+			c.Healthcheck = &plan.Healthcheck{StartInterval: 2 * time.Second}
+		}),
 	})
 }
 

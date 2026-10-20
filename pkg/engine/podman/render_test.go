@@ -143,6 +143,14 @@ func TestRunNetworks(t *testing.T) {
 			argv:  tstRunArgv([]string{"--network", "proj_front", "--network-alias", "web", "--network-alias", "a", "--network", "proj_back"}),
 			warns: []tstWarn{tstIgnored(tstWeb, "networks.back.ipv4_address")},
 		},
+		{
+			name: "link local ips are ignored",
+			step: tstRunStep(func(c *plan.ContainerSpec) {
+				c.Networks = []plan.NetworkAttachment{{Key: "front", Name: "proj_front", LinkLocalIPs: []string{"169.254.0.5"}}}
+			}),
+			argv:  tstRunArgv([]string{"--network", "proj_front"}),
+			warns: []tstWarn{tstIgnored(tstWeb, "networks.front.link_local_ips")},
+		},
 	})
 }
 

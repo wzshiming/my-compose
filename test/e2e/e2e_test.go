@@ -61,6 +61,9 @@ func TestStack(t *testing.T) {
 	default:
 		t.Fatalf("MY_COMPOSE_E2E_ENGINE=%q is not one of docker, podman, nerdctl, wslc or container", name)
 	}
+	if e.Name() != name {
+		t.Fatalf("MY_COMPOSE_E2E_ENGINE=%q selected engine %q", name, e.Name())
+	}
 	if _, err := exec.LookPath(e.Binary()); err != nil {
 		t.Fatalf("MY_COMPOSE_E2E_ENGINE=%s: %v", name, err)
 	}
