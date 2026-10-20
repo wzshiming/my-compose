@@ -21,8 +21,12 @@ import (
 	"github.com/distribution/reference"
 
 	"github.com/wzshiming/my-compose/pkg/cli"
-	"github.com/wzshiming/my-compose/pkg/engine/applecontainer"
-	"github.com/wzshiming/my-compose/pkg/engine/dockerlike"
+	"github.com/wzshiming/my-compose/pkg/engine"
+	"github.com/wzshiming/my-compose/pkg/engine/container"
+	"github.com/wzshiming/my-compose/pkg/engine/docker"
+	"github.com/wzshiming/my-compose/pkg/engine/nerdctl"
+	"github.com/wzshiming/my-compose/pkg/engine/podman"
+	"github.com/wzshiming/my-compose/pkg/engine/wslc"
 	"github.com/wzshiming/my-compose/pkg/plan"
 	"github.com/wzshiming/my-compose/pkg/runner"
 )
@@ -40,15 +44,22 @@ type stack struct {
 
 func TestStack(t *testing.T) {
 	name := os.Getenv("MY_COMPOSE_E2E_ENGINE")
-	if name == "" {
+	var e engine.Engine
+	switch name {
+	case "":
 		t.Fatal("MY_COMPOSE_E2E_ENGINE is not set: choose docker, podman, nerdctl, wslc or container")
-	}
-	e := applecontainer.New()
-	if name != e.Name() {
-		var err error
-		if e, err = dockerlike.New(name); err != nil {
-			t.Fatal(err)
-		}
+	case "docker":
+		e = docker.New()
+	case "podman":
+		e = podman.New()
+	case "nerdctl":
+		e = nerdctl.New()
+	case "wslc":
+		e = wslc.New()
+	case "container":
+		e = container.New()
+	default:
+		t.Fatalf("MY_COMPOSE_E2E_ENGINE=%q is not one of docker, podman, nerdctl, wslc or container", name)
 	}
 	if _, err := exec.LookPath(e.Binary()); err != nil {
 		t.Fatalf("MY_COMPOSE_E2E_ENGINE=%s: %v", name, err)

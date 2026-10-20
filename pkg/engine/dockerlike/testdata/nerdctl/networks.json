@@ -1,4 +1,0 @@
-{"CreatedAt":"2026-10-17 09:59:58 +0000 UTC","Driver":"bridge","ID":"6f0b3e2d1c0a","IPv6":"false","Internal":"false","Labels":"com.docker.compose.network=default,com.docker.compose.project=p,nerdctl/default-network=false","Name":"p_default","Scope":"local"}
-{"CreatedAt":"","Driver":"bridge","ID":"17f29b073143","IPv6":"","Internal":"","Labels":"nerdctl/default-network=true","Name":"bridge","Scope":""}
-{"CreatedAt":"","Driver":"","ID":"","IPv6":"","Internal":"","Labels":"","Name":"host","Scope":""}
-{"CreatedAt":"","Driver":"","ID":"","IPv6":"","Internal":"","Labels":"","Name":"none","Scope":""}

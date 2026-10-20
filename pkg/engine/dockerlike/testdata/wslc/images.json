@@ -1,5 +1,0 @@
-[
-  {"Containers":"N/A","CreatedAt":"2026-09-24 12:00:00 +0000 UTC","CreatedSince":"3 weeks ago","Digest":"<none>","ID":"3b25b682ea82","Repository":"nginx","SharedSize":"N/A","Size":"192MB","Tag":"1.27","UniqueSize":"N/A","VirtualSize":"192MB"},
-  {"Containers":"N/A","CreatedAt":"2026-10-10 12:00:00 +0000 UTC","CreatedSince":"7 days ago","Digest":"<none>","ID":"9e8d7c6b5a4f","Repository":"<none>","SharedSize":"N/A","Size":"12MB","Tag":"<none>","UniqueSize":"N/A","VirtualSize":"12MB"},
-  {"Containers":"N/A","CreatedAt":"2026-10-17 09:59:00 +0000 UTC","CreatedSince":"3 minutes ago","Digest":"<none>","ID":"7c6b5a4f3e2d","Repository":"p-web","SharedSize":"N/A","Size":"195MB","Tag":"latest","UniqueSize":"N/A","VirtualSize":"195MB"}
-]

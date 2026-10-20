@@ -1,1 +1,0 @@
-{"Driver":"local","Labels":"com.docker.compose.project=p,com.docker.compose.volume=data","Mountpoint":"/var/lib/nerdctl/1935db59/volumes/default/p_data/_data","Name":"p_data","Scope":"local","Size":""}

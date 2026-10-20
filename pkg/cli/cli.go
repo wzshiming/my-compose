@@ -12,8 +12,11 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/wzshiming/my-compose/pkg/engine"
-	"github.com/wzshiming/my-compose/pkg/engine/applecontainer"
-	"github.com/wzshiming/my-compose/pkg/engine/dockerlike"
+	"github.com/wzshiming/my-compose/pkg/engine/container"
+	"github.com/wzshiming/my-compose/pkg/engine/docker"
+	"github.com/wzshiming/my-compose/pkg/engine/nerdctl"
+	"github.com/wzshiming/my-compose/pkg/engine/podman"
+	"github.com/wzshiming/my-compose/pkg/engine/wslc"
 )
 
 type app struct {
@@ -40,12 +43,7 @@ func Main(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 }
 
 func candidates() []engine.Engine {
-	var cs []engine.Engine
-	for _, v := range dockerlike.Variants() {
-		e, _ := dockerlike.New(v) // cannot fail for a name from Variants
-		cs = append(cs, e)
-	}
-	return append(cs, applecontainer.New())
+	return []engine.Engine{docker.New(), podman.New(), nerdctl.New(), wslc.New(), container.New()}
 }
 
 // logFormatter prints compose-go's logrus entries like the planner's "warning: ..." lines.

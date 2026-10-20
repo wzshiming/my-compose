@@ -14,7 +14,7 @@ import (
 
 const tstWeb = "services.web"
 
-// tstVariant is a table-driven Variant like dockerlike's rows; bare makes Has answer false for every flag.
+// tstVariant is a table-driven Variant standing in for the engine packages' own; bare makes Has answer false for every flag.
 type tstVariant struct {
 	name, binary, listFormat string
 	psNoTrunc, integerCPUs   bool

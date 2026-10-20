@@ -203,6 +203,24 @@ func TestEngineSelection(t *testing.T) {
 	})
 }
 
+// TestCandidates keeps engine.Resolve's probe from silently skipping a real engine: every name Order probes on any OS must be a candidate.
+func TestCandidates(t *testing.T) {
+	var names []string
+	for _, e := range candidates() {
+		names = append(names, e.Name())
+	}
+	if !reflect.DeepEqual(names, tstGoldenEngines) {
+		t.Fatalf("candidates() = %q, want %q", names, tstGoldenEngines)
+	}
+	for _, goos := range []string{"darwin", "windows", "linux"} {
+		for _, name := range engine.Order(goos) {
+			if !slices.Contains(names, name) {
+				t.Errorf("engine.Order(%q) probes %q, which candidates() lacks", goos, name)
+			}
+		}
+	}
+}
+
 const tstUpLiveYAML = `services:
   web:
     image: nginx:1.27

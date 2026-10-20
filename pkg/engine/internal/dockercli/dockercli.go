@@ -23,7 +23,7 @@ type Variant interface {
 	ListFormat() string
 	// PSNoTrunc reports whether ps -a takes --no-trunc.
 	PSNoTrunc() bool
-	// Has reports whether command ("run", "build", "network create" or "volume create") takes flag, a "--mount <key>" or a gate such as "--ipv4".
+	// Has reports whether command ("run", "build", "network create" or "volume create") takes flag, named without its value ("--ipv4" for "--ipv4=false") or as a "--mount <key>" sub-key ("--mount volume-nocopy").
 	Has(command, flag string) bool
 	// IntegerCPUs reports whether --cpus takes whole numbers only.
 	IntegerCPUs() bool

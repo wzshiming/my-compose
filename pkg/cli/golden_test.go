@@ -3,15 +3,13 @@ package cli
 import (
 	"bytes"
 	"context"
-	"errors"
 	"flag"
-	"fmt"
-	"io/fs"
-	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
 	"testing"
+
+	"github.com/wzshiming/my-compose/pkg/engine/enginetest"
 )
 
 var tstUpdate = flag.Bool("update", false, "rewrite golden files")
@@ -66,46 +64,9 @@ func TestGolden(t *testing.T) {
 					if filepath.Separator != '/' {
 						content = tstQuotedDir.ReplaceAllString(content, "$1")
 					}
-
-					golden := filepath.Join(dir, eng, cmd.name+".golden")
-					if *tstUpdate {
-						if err := os.MkdirAll(filepath.Dir(golden), 0o755); err != nil {
-							t.Fatal(err)
-						}
-						if err := os.WriteFile(golden, []byte(content), 0o644); err != nil {
-							t.Fatal(err)
-						}
-						return
-					}
-					want, err := os.ReadFile(golden)
-					if errors.Is(err, fs.ErrNotExist) {
-						t.Fatalf("missing golden %s; run with -update", golden)
-					}
-					if err != nil {
-						t.Fatal(err)
-					}
-					if string(want) != content {
-						t.Errorf("%s differs from the dry run; run go test ./pkg/cli -update after reviewing:\n%s", golden, tstFirstDiff(string(want), content))
-					}
+					enginetest.Golden(t, filepath.Join(dir, eng, cmd.name+".golden"), content, *tstUpdate)
 				})
 			}
 		}
 	}
-}
-
-func tstFirstDiff(want, got string) string {
-	w, g := strings.Split(want, "\n"), strings.Split(got, "\n")
-	for i := range max(len(w), len(g)) {
-		var wl, gl string
-		if i < len(w) {
-			wl = w[i]
-		}
-		if i < len(g) {
-			gl = g[i]
-		}
-		if wl != gl {
-			return fmt.Sprintf("line %d:\n  golden: %q\n  output: %q", i+1, wl, gl)
-		}
-	}
-	return "no differing line (trailing whitespace?)"
 }
