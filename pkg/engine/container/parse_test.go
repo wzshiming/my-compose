@@ -155,7 +155,7 @@ func TestParseInspect(t *testing.T) {
 }
 
 func TestParseInspectErrors(t *testing.T) {
-	for _, in := range []string{"", " \n\t", "not json", "42", "[]", `{"a":1`} {
+	for _, in := range []string{"", " \n\t", "not json", "42", "[]", `{"a":1`, "null"} {
 		if _, err := container.New().ParseInspect([]byte(in)); err == nil {
 			t.Errorf("ParseInspect(%q) gave nil error", in)
 		}
@@ -255,7 +255,8 @@ func TestParseBlank(t *testing.T) {
 
 func TestParseInvalid(t *testing.T) {
 	e := container.New()
-	for _, in := range []string{"not json", "42", `{"a":1`, `[1,`} {
+	// null is not an empty list: the CLI prints [] for one.
+	for _, in := range []string{"not json", "42", `{"a":1`, `[1,`, "null"} {
 		if got, err := e.ParseContainers([]byte(in)); got != nil || err == nil {
 			t.Errorf("ParseContainers(%q) = %#v, %v; want nil slice and an error", in, got, err)
 		}

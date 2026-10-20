@@ -785,6 +785,15 @@ func TestOtherSteps(t *testing.T) {
 	}
 }
 
+// The "wait completed" row above accepts an empty warning slice; this pins the nil one.
+func TestWaitCompleted(t *testing.T) {
+	step := plan.WaitContainer{Name: "proj-web-1", Condition: plan.ConditionCompleted}
+	argv, ws, err := container.New().Render(step)
+	if argv != nil || ws != nil || err != nil {
+		t.Errorf("Render(WaitContainer completed) = %q, %q, %v; want nil, nil, nil", argv, ws, err)
+	}
+}
+
 func TestRenderErrors(t *testing.T) {
 	cases := []struct {
 		name string
