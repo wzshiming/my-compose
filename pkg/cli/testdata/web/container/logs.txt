@@ -1,0 +1,2 @@
+container logs web-db-1
+container logs web-web-1

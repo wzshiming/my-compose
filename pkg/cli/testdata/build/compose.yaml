@@ -1,0 +1,13 @@
+services:
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile.dev
+      args:
+        VERSION: "1.0"
+    ports:
+      - "3000:3000"
+  proxy:
+    image: caddy:2
+    depends_on:
+      - app

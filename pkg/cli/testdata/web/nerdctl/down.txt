@@ -1,0 +1,5 @@
+nerdctl stop web-web-1
+nerdctl rm -f web-web-1
+nerdctl stop web-db-1
+nerdctl rm -f web-db-1
+nerdctl network rm edge

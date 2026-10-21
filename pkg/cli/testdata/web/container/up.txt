@@ -1,0 +1,8 @@
+container network create --label com.docker.compose.network=front --label com.docker.compose.project=web edge
+container volume create --label com.docker.compose.project=web --label com.docker.compose.volume=logs nginx-logs
+container volume create --label com.docker.compose.project=web --label com.docker.compose.volume=data web_data
+container run --detach --name web-db-1 --env POSTGRES_PASSWORD=secret --label com.docker.compose.container-number=1 --label com.docker.compose.oneoff=False --label com.docker.compose.project=web --label com.docker.compose.project.config_files=<DIR>/compose.yaml --label com.docker.compose.project.working_dir=<DIR> --label com.docker.compose.service=db --mount type=volume,source=web_data,target=/var/lib/postgresql/data --network back,alias=db postgres:16
+container run --detach --name web-web-1 --label com.docker.compose.container-number=1 --label com.docker.compose.oneoff=False --label com.docker.compose.project=web --label com.docker.compose.project.config_files=<DIR>/compose.yaml --label com.docker.compose.project.working_dir=<DIR> --label com.docker.compose.service=web --publish 127.0.0.1:8080:80/tcp --publish 8443:443/tcp --mount type=volume,source=nginx-logs,target=/var/log/nginx --network back,alias=web --network edge,alias=web nginx:1.27
+# stderr: warning: services.db: healthcheck: ignored (container has no healthchecks)
+# stderr: warning: services.web: depends_on.db.condition: degraded to service_started (engine has no healthcheck support)
+# stderr: warning: services.web: restart: ignored (container has no equivalent)

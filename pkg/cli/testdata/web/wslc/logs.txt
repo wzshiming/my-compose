@@ -1,0 +1,2 @@
+wslc logs web-db-1
+wslc logs web-web-1

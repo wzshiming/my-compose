@@ -1,0 +1,1 @@
+nerdctl ps -a --no-trunc --filter label=com.docker.compose.project=build --format '{{json .}}'

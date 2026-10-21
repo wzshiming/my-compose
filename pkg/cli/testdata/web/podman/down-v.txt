@@ -1,0 +1,7 @@
+podman stop web-web-1
+podman rm -f -v web-web-1
+podman stop web-db-1
+podman rm -f -v web-db-1
+podman network rm edge
+podman volume rm nginx-logs
+podman volume rm web_data

@@ -1,0 +1,7 @@
+nerdctl stop web-web-1
+nerdctl rm -f -v web-web-1
+nerdctl stop web-db-1
+nerdctl rm -f -v web-db-1
+nerdctl network rm edge
+nerdctl volume rm nginx-logs
+nerdctl volume rm web_data

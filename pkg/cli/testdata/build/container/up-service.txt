@@ -1,0 +1,3 @@
+container network create --label com.docker.compose.network=default --label com.docker.compose.project=build build_default
+container build --file <DIR>/app/Dockerfile.dev --build-arg VERSION=1.0 --tag build-app <DIR>/app
+container run --detach --name build-app-1 --label com.docker.compose.container-number=1 --label com.docker.compose.oneoff=False --label com.docker.compose.project=build --label com.docker.compose.project.config_files=<DIR>/compose.yaml --label com.docker.compose.project.working_dir=<DIR> --label com.docker.compose.service=app --publish 3000:3000/tcp --network build_default,alias=app build-app

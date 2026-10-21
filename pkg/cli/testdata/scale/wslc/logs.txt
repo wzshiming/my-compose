@@ -1,0 +1,3 @@
+wslc logs scale-cache
+wslc logs scale-worker-1
+wslc logs scale-worker-2

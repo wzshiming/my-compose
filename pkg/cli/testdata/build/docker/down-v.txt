@@ -1,0 +1,5 @@
+docker stop build-proxy-1
+docker rm -f -v build-proxy-1
+docker stop build-app-1
+docker rm -f -v build-app-1
+docker network rm build_default

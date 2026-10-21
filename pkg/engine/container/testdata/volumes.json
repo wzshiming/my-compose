@@ -1,0 +1,28 @@
+[
+  {
+    "name": "proj_data",
+    "driver": "local",
+    "format": "ext4",
+    "source": "/Users/me/Library/Application Support/com.apple.container/volumes/proj_data/volume.img",
+    "createdAt": 782345600.0,
+    "labels": {
+      "com.docker.compose.project": "proj",
+      "com.docker.compose.volume": "data"
+    },
+    "options": {},
+    "sizeInBytes": 536870912
+  },
+  {
+    "name": "proj_logs",
+    "driver": "local",
+    "format": "ext4",
+    "source": "/Users/me/Library/Application Support/com.apple.container/volumes/proj_logs/volume.img",
+    "createdAt": 782345601.0,
+    "labels": {
+      "com.docker.compose.project": "proj",
+      "com.docker.compose.volume": "logs"
+    },
+    "options": {"size": "1G"},
+    "sizeInBytes": 1073741824
+  }
+]

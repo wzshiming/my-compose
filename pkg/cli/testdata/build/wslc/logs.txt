@@ -1,0 +1,2 @@
+wslc logs build-app-1
+wslc logs build-proxy-1

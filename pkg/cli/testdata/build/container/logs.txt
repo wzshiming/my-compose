@@ -1,0 +1,2 @@
+container logs build-app-1
+container logs build-proxy-1

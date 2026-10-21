@@ -1,0 +1,5 @@
+podman stop build-proxy-1
+podman rm -f -v build-proxy-1
+podman stop build-app-1
+podman rm -f -v build-app-1
+podman network rm build_default

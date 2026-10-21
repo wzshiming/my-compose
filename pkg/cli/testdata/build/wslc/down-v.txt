@@ -1,0 +1,5 @@
+wslc stop build-proxy-1
+wslc rm -f -v build-proxy-1
+wslc stop build-app-1
+wslc rm -f -v build-app-1
+wslc network rm build_default

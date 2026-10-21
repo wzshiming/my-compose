@@ -1,0 +1,5 @@
+podman stop web-web-1
+podman rm -f web-web-1
+podman stop web-db-1
+podman rm -f web-db-1
+podman network rm edge

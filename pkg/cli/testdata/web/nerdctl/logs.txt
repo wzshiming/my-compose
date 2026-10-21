@@ -1,0 +1,2 @@
+nerdctl logs web-db-1
+nerdctl logs web-web-1

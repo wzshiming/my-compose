@@ -1,0 +1,7 @@
+docker stop web-web-1
+docker rm -f -v web-web-1
+docker stop web-db-1
+docker rm -f -v web-db-1
+docker network rm edge
+docker volume rm nginx-logs
+docker volume rm web_data

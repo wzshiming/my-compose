@@ -1,0 +1,9 @@
+container stop web-web-1
+container delete --force web-web-1
+container stop web-db-1
+container delete --force web-db-1
+container network delete edge
+container volume delete nginx-logs
+container volume delete web_data
+# stderr: warning: containers.web-db-1: volumes: ignored (container keeps anonymous volumes; run container volume prune)
+# stderr: warning: containers.web-web-1: volumes: ignored (container keeps anonymous volumes; run container volume prune)

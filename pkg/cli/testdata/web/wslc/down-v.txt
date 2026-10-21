@@ -1,0 +1,7 @@
+wslc stop web-web-1
+wslc rm -f -v web-web-1
+wslc stop web-db-1
+wslc rm -f -v web-db-1
+wslc network rm edge
+wslc volume rm nginx-logs
+wslc volume rm web_data

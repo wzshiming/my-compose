@@ -1,0 +1,79 @@
+[
+  {
+    "id": "proj-web-1",
+    "configuration": {
+      "id": "proj-web-1",
+      "image": {
+        "reference": "docker.io/library/nginx:1.27",
+        "descriptor": {
+          "mediaType": "application/vnd.oci.image.index.v1+json",
+          "digest": "sha256:1a2b3c4d5e6f1a2b3c4d5e6f1a2b3c4d5e6f1a2b3c4d5e6f1a2b3c4d5e6f1a2b",
+          "size": 10234
+        }
+      },
+      "mounts": [],
+      "publishedPorts": [
+        {
+          "hostAddress": "127.0.0.1",
+          "hostPort": 8080,
+          "containerPort": 80,
+          "proto": "tcp",
+          "count": 2
+        }
+      ],
+      "publishedSockets": [],
+      "labels": {
+        "com.docker.compose.container-number": "1",
+        "com.docker.compose.project": "proj",
+        "com.docker.compose.service": "web",
+        "com.example.owner": "platform"
+      },
+      "sysctls": {},
+      "networks": [
+        {
+          "network": "proj_front",
+          "options": {
+            "hostname": "proj-web-1.proj_front.",
+            "aliases": ["web.proj_front."]
+          }
+        }
+      ],
+      "rosetta": false,
+      "initProcess": {
+        "executable": "nginx",
+        "arguments": ["-g", "daemon off;"],
+        "environment": [
+          "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+          "NGINX_VERSION=1.27.0"
+        ],
+        "workingDirectory": "/usr/share/nginx/html",
+        "terminal": false,
+        "user": {"id": {"uid": 101, "gid": 101}},
+        "supplementalGroups": [],
+        "rlimits": []
+      },
+      "platform": {"os": "linux", "architecture": "arm64"},
+      "resources": {"cpus": 4, "memoryInBytes": 1073741824},
+      "runtimeHandler": "container-runtime-linux",
+      "hostname": "web",
+      "ssh": false,
+      "virtualization": false,
+      "readOnly": false,
+      "useInit": true,
+      "creationDate": 782345678.123456
+    },
+    "status": {
+      "state": "running",
+      "networks": [
+        {
+          "network": "proj_front",
+          "hostname": "proj-web-1.proj_front.",
+          "ipv4Address": "192.168.65.3/24",
+          "ipv4Gateway": "192.168.65.1",
+          "macAddress": "02:42:c0:a8:41:03"
+        }
+      ],
+      "startedDate": 782345680.5
+    }
+  }
+]

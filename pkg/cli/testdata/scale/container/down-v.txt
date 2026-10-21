@@ -1,0 +1,8 @@
+container stop scale-worker-1 scale-worker-2
+container delete --force scale-worker-1 scale-worker-2
+container stop scale-cache
+container delete --force scale-cache
+container network delete scale_default
+# stderr: warning: containers.scale-cache: volumes: ignored (container keeps anonymous volumes; run container volume prune)
+# stderr: warning: containers.scale-worker-1: volumes: ignored (container keeps anonymous volumes; run container volume prune)
+# stderr: warning: containers.scale-worker-2: volumes: ignored (container keeps anonymous volumes; run container volume prune)

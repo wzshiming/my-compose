@@ -1,0 +1,2 @@
+container network create --label com.docker.compose.network=default --label com.docker.compose.project=scale scale_default
+container run --detach --name scale-debug-1 --label com.docker.compose.container-number=1 --label com.docker.compose.oneoff=False --label com.docker.compose.project=scale --label com.docker.compose.project.config_files=<DIR>/compose.yaml --label com.docker.compose.project.working_dir=<DIR> --label com.docker.compose.service=debug --network scale_default,alias=debug alpine:3.20 sleep infinity

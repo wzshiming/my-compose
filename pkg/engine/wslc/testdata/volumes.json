@@ -1,0 +1,3 @@
+[
+  {"Availability":"N/A","Driver":"local","Group":"N/A","Labels":"com.docker.compose.project=p,com.docker.compose.volume=data","Links":"N/A","Mountpoint":"/var/lib/docker/volumes/p_data/_data","Name":"p_data","Scope":"local","Size":"N/A","Status":"N/A"}
+]

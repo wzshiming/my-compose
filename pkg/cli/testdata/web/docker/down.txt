@@ -1,0 +1,5 @@
+docker stop web-web-1
+docker rm -f web-web-1
+docker stop web-db-1
+docker rm -f web-db-1
+docker network rm edge

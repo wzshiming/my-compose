@@ -1,0 +1,1 @@
+container list --all --format json

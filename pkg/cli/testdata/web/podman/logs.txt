@@ -1,0 +1,2 @@
+podman logs web-db-1
+podman logs web-web-1

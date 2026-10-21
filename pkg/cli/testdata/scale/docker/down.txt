@@ -1,0 +1,5 @@
+docker stop scale-worker-1 scale-worker-2
+docker rm -f scale-worker-1 scale-worker-2
+docker stop scale-cache
+docker rm -f scale-cache
+docker network rm scale_default

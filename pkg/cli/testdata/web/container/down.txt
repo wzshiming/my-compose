@@ -1,0 +1,5 @@
+container stop web-web-1
+container delete --force web-web-1
+container stop web-db-1
+container delete --force web-db-1
+container network delete edge

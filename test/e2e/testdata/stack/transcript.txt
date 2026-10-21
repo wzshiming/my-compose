@@ -1,0 +1,41 @@
+## up
+up: exit 0
+network e2e_backend: present
+volume e2e_data: present
+image e2e-app:latest: present
+## ps
+ps: exit 0
+e2e-api-1 api 1 busybox:1.36 running healthy 0 127.0.0.1:18080->8080/tcp
+e2e-app-1 app 1 e2e-app:latest running none 0 -
+e2e-web-1 web 1 busybox:1.36 running none 0 -
+e2e-web-2 web 2 busybox:1.36 running none 0 -
+## ps -a
+ps -a: exit 0
+e2e-api-1 api 1 busybox:1.36 running healthy 0 127.0.0.1:18080->8080/tcp
+e2e-app-1 app 1 e2e-app:latest running none 0 -
+e2e-web-1 web 1 busybox:1.36 running none 0 -
+e2e-web-2 web 2 busybox:1.36 running none 0 -
+## ps -q
+ps -q: exit 0
+e2e-api-1
+e2e-app-1
+e2e-web-1
+e2e-web-2
+## logs
+logs: exit 0
+e2e-api-1 | api-ready
+e2e-app-1 | app-ready
+e2e-web-1 | web-ready
+e2e-web-2 | web-ready
+## up again
+up again: exit 0 stdout-empty=true stderr-empty=true
+## down
+down: exit 0
+ps -a: exit 0
+ps -a: none
+network e2e_backend: absent
+volume e2e_data: present
+image e2e-app:latest: present
+## down -v
+down -v: exit 0
+volume e2e_data: absent

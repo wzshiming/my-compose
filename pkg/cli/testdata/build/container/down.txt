@@ -1,0 +1,5 @@
+container stop build-proxy-1
+container delete --force build-proxy-1
+container stop build-app-1
+container delete --force build-app-1
+container network delete build_default
