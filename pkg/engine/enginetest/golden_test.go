@@ -86,10 +86,10 @@ func TestRenderSteps(t *testing.T) {
 	})
 }
 
-// tstWriteGolden writes content to a steps.golden in a fresh temp dir and returns its path.
+// tstWriteGolden writes content to a steps.txt in a fresh temp dir and returns its path.
 func tstWriteGolden(t *testing.T, content string) string {
 	t.Helper()
-	path := filepath.Join(t.TempDir(), "steps.golden")
+	path := filepath.Join(t.TempDir(), "steps.txt")
 	if err := os.WriteFile(path, []byte(content), 0o644); err != nil {
 		t.Fatal(err)
 	}
@@ -100,7 +100,7 @@ func TestGolden(t *testing.T) {
 	const content = "ListImages\n  argv: [\"image\" \"ls\"]\n  warnings:\n"
 
 	t.Run("missing golden reports once and writes nothing", func(t *testing.T) {
-		path := filepath.Join(t.TempDir(), "steps.golden")
+		path := filepath.Join(t.TempDir(), "steps.txt")
 		rec := &recordingTB{TB: t}
 		enginetest.Golden(rec, path, content, false)
 		if len(rec.errs) != 1 {
@@ -115,7 +115,7 @@ func TestGolden(t *testing.T) {
 	})
 
 	t.Run("update creates the file and its directory", func(t *testing.T) {
-		path := filepath.Join(t.TempDir(), "testdata", "steps.golden")
+		path := filepath.Join(t.TempDir(), "testdata", "steps.txt")
 		rec := &recordingTB{TB: t}
 		enginetest.Golden(rec, path, content, true)
 		if len(rec.errs) != 0 {

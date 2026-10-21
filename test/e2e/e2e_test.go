@@ -31,7 +31,7 @@ import (
 	"github.com/wzshiming/my-compose/pkg/runner"
 )
 
-var update = flag.Bool("update", false, "rewrite transcript.golden from this run")
+var update = flag.Bool("update", false, "rewrite transcript.txt from this run")
 
 const project = "e2e"
 
@@ -146,7 +146,7 @@ func TestStack(t *testing.T) {
 	tr = append(tr, "## down -v", fmt.Sprintf("down -v: exit %d", code), s.has("volume", plan.ListVolumes{}, "e2e_data"))
 
 	got := strings.Join(tr, "\n") + "\n"
-	golden := filepath.Join(dir, "transcript.golden")
+	golden := filepath.Join(dir, "transcript.txt")
 	if *update {
 		write(t, golden, []byte(got))
 		return

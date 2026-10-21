@@ -29,7 +29,7 @@ var tstGoldenCases = []struct {
 	{"build", "app"},
 }
 
-// TestGolden pins the dry-run command lines of every engine for each testdata case; -update rewrites testdata/<case>/<engine>/<command>.golden.
+// TestGolden pins the dry-run command lines of every engine for each testdata case; -update rewrites testdata/<case>/<engine>/<command>.txt.
 func TestGolden(t *testing.T) {
 	for _, c := range tstGoldenCases {
 		dir, err := filepath.Abs(filepath.Join("testdata", c.dir))
@@ -64,7 +64,7 @@ func TestGolden(t *testing.T) {
 					if filepath.Separator != '/' {
 						content = tstQuotedDir.ReplaceAllString(content, "$1")
 					}
-					enginetest.Golden(t, filepath.Join(dir, eng, cmd.name+".golden"), content, *tstUpdate)
+					enginetest.Golden(t, filepath.Join(dir, eng, cmd.name+".txt"), content, *tstUpdate)
 				})
 			}
 		}

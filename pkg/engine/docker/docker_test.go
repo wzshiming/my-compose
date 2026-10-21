@@ -12,7 +12,7 @@ import (
 	"github.com/wzshiming/my-compose/pkg/plan"
 )
 
-var tstUpdate = flag.Bool("update", false, "rewrite testdata/steps.golden from the current Render output")
+var tstUpdate = flag.Bool("update", false, "rewrite testdata/steps.txt from the current Render output")
 
 func TestIdentity(t *testing.T) {
 	e := docker.New()
@@ -35,5 +35,5 @@ func TestContract(t *testing.T) {
 }
 
 func TestGolden(t *testing.T) {
-	enginetest.Golden(t, filepath.Join("testdata", "steps.golden"), enginetest.RenderSteps(docker.New()), *tstUpdate)
+	enginetest.Golden(t, filepath.Join("testdata", "steps.txt"), enginetest.RenderSteps(docker.New()), *tstUpdate)
 }

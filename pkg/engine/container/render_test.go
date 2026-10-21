@@ -15,7 +15,7 @@ import (
 	"github.com/wzshiming/my-compose/pkg/plan"
 )
 
-var tstUpdate = flag.Bool("update", false, "rewrite testdata/steps.golden from the current Render output")
+var tstUpdate = flag.Bool("update", false, "rewrite testdata/steps.txt from the current Render output")
 
 // tstUnknownStep satisfies the sealed plan.Step interface with a type no engine knows.
 type tstUnknownStep struct{ plan.Step }
@@ -96,7 +96,7 @@ func TestIdentity(t *testing.T) {
 }
 
 func TestGolden(t *testing.T) {
-	enginetest.Golden(t, filepath.Join("testdata", "steps.golden"), enginetest.RenderSteps(container.New()), *tstUpdate)
+	enginetest.Golden(t, filepath.Join("testdata", "steps.txt"), enginetest.RenderSteps(container.New()), *tstUpdate)
 }
 
 func TestDeterministic(t *testing.T) {
